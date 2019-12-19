@@ -50,3 +50,29 @@ from Orange.data import Domain, DiscreteVariable, ContinuousVariable
 
 #Reading Online Retail File
 cs_df = pd.read_excel(io=r'C:/Users/bikas/Downloads/Online Retail.xlsx')
+
+#Performing EDA over the dataset
+def rstr(df):
+    obs = df.shape[0]
+    types = df.dtypes
+    counts = df.apply(lambda x: x.count())
+    uniques = df.apply(lambda x: [x.unique()])
+    nulls = df.apply(lambda x: x.isnull().sum())
+    distincts = df.apply(lambda x: x.unique().shape[0])
+    missing_ration = (df.isnull().sum() / obs) * 100
+    skewness = df.skew()
+    kurtosis = df.kurt()
+    print('Data shape:', df.shape)
+
+    cols = ['types', 'counts', 'distincts', 'nulls', 'missing ration', 'uniques', 'skewness', 'kurtosis']
+    str = pd.concat([types, counts, distincts, nulls, missing_ration, uniques, skewness, kurtosis], axis=1, sort=True)
+
+    str.columns = cols
+    dtypes = str.types.value_counts()
+    print('___________________________\nData types:\n', str.types.value_counts())
+    print('___________________________')
+    return str
+
+
+details = rstr(cs_df)
+display(details.sort_values(by='missing ration', ascending=False))
